@@ -1,0 +1,42 @@
+REM Not Complete
+echo off
+setlocal EnableExtensions
+REM Gather variables from user
+SET /p path=Enter path to write log file to:
+SET /p file=Enter name for log file:
+SET /p showavailable=Show all visible SSID's? Enter y or n:
+SET /p continuous=Use continous scan? Enter y or n:
+
+IF %continuous%==y (CALL:CONTINUOUSSCAN) ELSE CALL:WALKTEST
+
+
+REM begin program
+cd\WINDOWS\System32
+
+:WALKTEST
+SET count=0
+SET /p tag=Enter tag for scan %count%:
+ECHO Writing to %path%%file%
+CALL:GETWIFICONNECTION
+SET /p scanagain==Scan again?:
+IF scanagain==y (CALL:WALKTEST) else GOTO :EOF
+
+:CONTINUOUSSCAN
+SET/p repeat=Enter number of times to record:
+SET /p interval=Enter number of seconds between records:
+CALL
+
+:GetWiFiConnection
+echo ___%count%____
+echo %date% %time%
+echo Connected to...
+netsh wlan show interfaces | Findstr "SSID Signal"
+IF %showavailable%==yes CALL :GetAvailable
+SET /a count+=1
+timeout %interval%
+IF %count% LSS %repeat% GOTO :GetWiFiConnection
+echo "test complete..."
+GOTO :EOF
+
+:EOF
+ECHO TEST COMPLETE
