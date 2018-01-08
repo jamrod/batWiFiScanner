@@ -1,4 +1,3 @@
-REM Not Complete
 echo off
 setlocal EnableExtensions
 REM begin program
